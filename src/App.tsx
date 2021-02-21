@@ -8,14 +8,20 @@ import {
   BrowserRouter as Router,
   Route
 } from "react-router-dom";
+import Row from 'antd/lib/row';
+import { Col } from 'antd/lib/grid';
 
 
 
 function App() {
   return (
     <Router>
-      <PageHeader title="Dictionary" subTitle="Learning dictionary" footer={<Navbar />} />
-      <Route path="dictionary" component={Dictionary} />
+      <Row justify="center">
+        <Col>
+          <PageHeader title="Dictionary" subTitle="Learning dictionary" footer={<Navbar />} />
+          <Route path="/" exact component={Dictionary} />
+        </Col>
+      </Row>
     </Router>
   )
 }
