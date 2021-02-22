@@ -1,8 +1,11 @@
 import List from 'antd/lib/list';
 import Search from 'antd/lib/input/Search';
 import Row from 'antd/lib/row';
+import Divider from "antd/lib/divider";
 import React, { useEffect, useState } from 'react';
 import { Col } from 'antd/lib/grid';
+import { REFUSED } from 'dns';
+import Spin from 'antd/lib/spin';
 
 const API_CONFIG = {
     apiKey: "09c87581-174b-456e-9867-97c319d5b55e"
@@ -10,15 +13,23 @@ const API_CONFIG = {
 
 const Dictionary = () => {
     const [data, setData] = useState<any[]>([]);
+    const [word, setWord] = useState<string>();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         console.log(data);
     }, [data])
 
     const onSearchWord = async (value: string) => {
-        const word = value;
-        const result = await fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${word}?key=${API_CONFIG.apiKey}`)
-        setData(await result.json());
+        setWord(value)
+        setLoading(true)
+        const result = await (await fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${word}?key=${API_CONFIG.apiKey}`)).json()
+        setData(
+            result
+                .filter((r: any) => r.fl !== undefined && r.def !== undefined)
+                .map((r: any) => ({ fl: r.fl, def: r.shortdef }))
+        )
+        setLoading(false)
     }
 
     return (
@@ -31,17 +42,38 @@ const Dictionary = () => {
             <Row>
                 <Col span={24}>
                     <List
+                        size="large"
+                        itemLayout="vertical"
                         dataSource={data}
                         bordered
-                        renderItem={item => {
-                            return <List.Item>{ item.shortdef[0] }</List.Item>
-                        }} />
+                        header={word}
+                        loading={{ size: "large", spinning: loading }}
+                        renderItem={item => <MeanList definations={item} />} />
                 </Col>
             </Row>
         </>
     )
 }
 
+interface MeanListProps {
+    definations: {
+        fl: string;
+        def: string[];
+    }
+}
+
+const MeanList: React.FC<MeanListProps> = (props) => {
+    return <List.Item>
+        <List.Item.Meta title={props.definations.fl} />
+        <ul>
+            {props.definations.def.map(d => (
+                <>
+                    <li>{d}</li>
+                </>
+            ))}
+        </ul>
+    </List.Item>
+}
 
 
 
