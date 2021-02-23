@@ -1,0 +1,13 @@
+// .babelrc
+{
+    "plugins": [
+        [
+            "import",
+            {
+                "libraryName": "antd",
+                "style": true,
+                "libraryDirectory": "lib"
+            }
+        ]
+    ]
+}

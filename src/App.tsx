@@ -18,7 +18,7 @@ function App() {
     <Router>
       <Row justify="center">
         <Col xl={12} md={16} xs={22}>
-          <PageHeader title="Dictionary" subTitle="Learning dictionary" footer={<Navbar />} />
+          <PageHeader title="Scholar" subTitle="Learning dictionary" footer={<Navbar />} />
           <Route path="/" exact component={Dictionary} />
         </Col>
       </Row>

@@ -1,14 +1,16 @@
 import List from 'antd/lib/list';
 import Search from 'antd/lib/input/Search';
 import Row from 'antd/lib/row';
-import Divider from "antd/lib/divider";
 import React, { useEffect, useState } from 'react';
 import { Col } from 'antd/lib/grid';
-import { REFUSED } from 'dns';
-import Spin from 'antd/lib/spin';
 
-const API_CONFIG = {
-    apiKey: "09c87581-174b-456e-9867-97c319d5b55e"
+interface API_CONFIG {
+    apiKey: string;
+    type: "learners" | "sd3";
+}
+const API_CONFIG: API_CONFIG = {
+    apiKey: "09c87581-174b-456e-9867-97c319d5b55e",
+    type: "learners"
 }
 
 const Dictionary = () => {
@@ -23,7 +25,8 @@ const Dictionary = () => {
     const onSearchWord = async (value: string) => {
         setWord(value)
         setLoading(true)
-        const result = await (await fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${word}?key=${API_CONFIG.apiKey}`)).json()
+
+        const result = await (await fetch(`https://www.dictionaryapi.com/api/v3/references/${API_CONFIG.type}/json/${value}?key=${API_CONFIG.apiKey}`)).json()
         setData(
             result
                 .filter((r: any) => r.fl !== undefined && r.def !== undefined)

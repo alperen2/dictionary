@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Scholar Dictionary",
+  "name": "Learn new words",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
