@@ -3,80 +3,69 @@ import Search from 'antd/lib/input/Search';
 import Row from 'antd/lib/row';
 import React, { useEffect, useState } from 'react';
 import { Col } from 'antd/lib/grid';
+import Empty from 'antd/lib/empty';
+import { log } from 'console';
 
 interface API_CONFIG {
-    apiKey: string;
-    type: "learners" | "sd3";
+    app_id: string;
+    app_key: string;
+    language: string;
 }
 const API_CONFIG: API_CONFIG = {
-    apiKey: "09c87581-174b-456e-9867-97c319d5b55e",
-    type: "learners"
+    app_id: "d9059350",
+    app_key: "d50dec262ee85fd0c4462fef816cf94b",
+    language: "en-gb",
 }
+
+
 
 const Dictionary = () => {
     const [data, setData] = useState<any[]>([]);
     const [word, setWord] = useState<string>();
     const [loading, setLoading] = useState(false);
 
+
+
+
     useEffect(() => {
         console.log(data);
     }, [data])
 
     const onSearchWord = async (value: string) => {
+        if (value.length == 0) return false;
         setWord(value)
         setLoading(true)
 
-        const result = await (await fetch(`https://www.dictionaryapi.com/api/v3/references/${API_CONFIG.type}/json/${value}?key=${API_CONFIG.apiKey}`)).json()
-        setData(
-            result
-                .filter((r: any) => r.fl !== undefined && r.def !== undefined)
-                .map((r: any) => ({ fl: r.fl, def: r.shortdef }))
-        )
-        setLoading(false)
-    }
+        await fetch(`https://od-api.oxforddictionaries.com:443/api/v2/entries/${API_CONFIG.language}/${value.toLocaleLowerCase()}`, {
+            headers: {
+                'app_id': 'd9059350',
+                'app_key': 'd50dec262ee85fd0c4462fef816cf94b',
+                'Access-Control-Allow-Origin': '*'
 
+            },
+        })
+            .then(e => e.json())
+            .then(async result => {
+                console.log('====================================');
+                console.log(result);
+                console.log('====================================');
+            })
+    }
     return (
         <>
             <Row className="SearchRow">
                 <Col span={24}>
-                    <Search placeholder="Search a word" onSearch={onSearchWord} enterButton />
+                    <Search placeholder="Search a word" onSearch={onSearchWord} allowClear enterButton />
                 </Col>
             </Row>
             <Row>
                 <Col span={24}>
-                    <List
-                        size="large"
-                        itemLayout="vertical"
-                        dataSource={data}
-                        bordered
-                        header={word}
-                        loading={{ size: "large", spinning: loading }}
-                        renderItem={item => <MeanList definations={item} />} />
                 </Col>
             </Row>
         </>
     )
 }
 
-interface MeanListProps {
-    definations: {
-        fl: string;
-        def: string[];
-    }
-}
-
-const MeanList: React.FC<MeanListProps> = (props) => {
-    return <List.Item>
-        <List.Item.Meta title={props.definations.fl} />
-        <ul>
-            {props.definations.def.map(d => (
-                <>
-                    <li>{d}</li>
-                </>
-            ))}
-        </ul>
-    </List.Item>
-}
 
 
 
