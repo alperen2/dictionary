@@ -32,10 +32,12 @@ const Dictionary = () => {
         setWord(value)
         setLoading(true)
         await fetch(`https://od-api.oxforddictionaries.com:443/api/v2/entries/${API_CONFIG.language}/${value.toLocaleLowerCase()}`, {
+            method: "get",
             headers: {
                 'app_id': API_CONFIG.app_id,
                 'app_key': API_CONFIG.app_key,
-            }
+                'Content-Type': 'application/json',
+            },
         })
             .then(response => response.json())
             .then(data => console.log(data))
