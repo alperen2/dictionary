@@ -20,31 +20,20 @@ const Dictionary = () => {
     const [word, setWord] = useState<string>();
     const [loading, setLoading] = useState(false);
 
-
-
-
-    useEffect(() => {
-        console.log(data);
-    }, [data])
-
     const onSearchWord = async (value: string) => {
         if (value.length == 0) return false;
         setWord(value)
         setLoading(true)
-        await fetch(`https://od-api.oxforddictionaries.com:443/api/v2/entries/${API_CONFIG.language}/${value.toLocaleLowerCase()}`, {
-            method: "get",
+        await fetch(`/api/v2/entries/${API_CONFIG.language}/test`, {
             headers: {
                 'app_id': API_CONFIG.app_id,
                 'app_key': API_CONFIG.app_key,
-                'Content-Type': 'application/json',
             },
         })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(err => console.error(err));
+        .then(e => e.text())
+        .then(e => console.log(e))
 
-
-    }
+        }
     return (
         <>
             <Row className="SearchRow">
